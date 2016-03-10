@@ -1,0 +1,76 @@
+﻿CS+ V3.03.00  [16 Nov 2015] [Watch Information]
+Donnerstag, 10. März 2016 16:12:14
+Debug Tool :RX E1(Serial)
+Project Name :fc-0.0.0
+Watch                 Value         Type(Byte Size) Address     Memo
+--------------------------------------------------------------------------------
+-Xini                 -             matrix_t(8)     0x0002587c                  
+ nRows                3 (0x0003)    uint16_t(2)     0x0002587c                  
+ nCols                5 (0x0005)    uint16_t(2)     0x0002587e                  
+ data                 0x000258d4    void *(4)       0x00025880                  
+-Matrix_x             -             float [15](60)  0x000258d4                  
+ [0]                  0.000000E+000 float(4)        0x000258d4                  
+ [1]                  0.000000E+000 float(4)        0x000258d8                  
+ [2]                  0.000000E+000 float(4)        0x000258dc                  
+ [3]                 -1.490712E+000 float(4)        0x000258e0                  
+ [4]                 -8.606631E-001 float(4)        0x000258e4                  
+ [5]                 -6.085806E-001 float(4)        0x000258e8                  
+ [6]                  1.490712E+000 float(4)        0x000258ec                  
+ [7]                 -8.606631E-001 float(4)        0x000258f0                  
+ [8]                 -6.085806E-001 float(4)        0x000258f4                  
+ [9]                  0.000000E+000 float(4)        0x000258f8                  
+ [10]                 1.721326E+000 float(4)        0x000258fc                  
+ [11]                -6.085806E-001 float(4)        0x00025900                  
+ [12]                 0.000000E+000 float(4)        0x00025904                  
+ [13]                 0.000000E+000 float(4)        0x00025908                  
+ [14]                 1.825742E+000 float(4)        0x0002590c                  
+WS                    2.250000E-001 float(4)        0x00025cd4                  
+
+
+/* Typedef definitions  */
+
+typedef struct 
+{ 
+    uint16_t nRows;
+    uint16_t nCols; 
+    void *   data; 
+} matrix_t; 
+
+/* Constant definitions  */
+
+#define NX      7           // number of spherical sigma points
+#define W0      0.1         // Tuningparameter des Filters
+#define WS (1-W0)/(NX+1)    // ???
+
+/* global vars   */
+
+float Matrix_x[NX * (NX + 2)] = {0.0};      // define new data array, Spherical Sigma Points matrix, init to 0.0
+matrix_t Xini;                              // define new matrix struct var
+
+/* Functions  */
+
+void init_spherical_sigma_points(void)
+{
+    Xini.data = (void *) Matrix_x;              // assign the matrix data pointer to matrix struct (.data)
+    Xini.nRows = NX;                            // assign the number of rows to matrix struct (.nRows)
+    Xini.nCols = NX + 2;                        // assign the number of columns to matrix struct (.nCols)
+    calc_spherical_sigma_points(Xini, WS);      // ???
+    
+}
+
+void calc_spherical_sigma_points(matrix_t sp_matrix, float ws)
+{
+    int row, col;
+    float * xini;
+    
+    for (row = 1; row <= sp_matrix.nRows; row++)        // i ist die Zeile (row)
+    {
+        for (col = 2; col <= row + 1; col++)            // j ist die Spalte (column)
+        {
+            xini = (float *)sp_matrix.data  + ((col - 1) * sp_matrix.nRows + row - 1);  // calc the pointer to data (index)
+            *xini = -1.0 / sqrtf((float)row * ((float)row + 1.0) * ws);                 // calc the value
+        }
+        xini = (float *)sp_matrix.data + ((row + 1) * sp_matrix.nRows + row - 1);       // calc the pointer to data (index)
+        *xini = (float)row / sqrt((float)row * ((float)row + 1.0) * ws);                // calc the value
+    }
+}
