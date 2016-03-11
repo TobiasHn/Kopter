@@ -38,9 +38,9 @@ typedef struct
 
 /* Constant definitions  */
 
-#define NX      7           // number of spherical sigma points
-#define W0      0.1         // Tuningparameter des Filters
-#define WS (1-W0)/(NX+1)    // ???
+#define NX      3           	// number of spherical sigma points
+#define W0      0.1         	// Tuningparameter des Filters
+#define WS     (1-W0)/(NX+1)	// ???
 
 /* global vars   */
 
@@ -71,6 +71,6 @@ void calc_spherical_sigma_points(matrix_t sp_matrix, float ws)
             *xini = -1.0 / sqrtf((float)row * ((float)row + 1.0) * ws);                 // calc the value
         }
         xini = (float *)sp_matrix.data + ((row + 1) * sp_matrix.nRows + row - 1);       // calc the pointer to data (index)
-        *xini = (float)row / sqrt((float)row * ((float)row + 1.0) * ws);                // calc the value
+        *xini = (float)row / sqrtf((float)row * ((float)row + 1.0) * ws);               // calc the value
     }
 }
