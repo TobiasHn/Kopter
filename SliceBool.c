@@ -64,6 +64,7 @@ result_matrix data:
 /* global vars   */
 
 float Matrix_f[MATRIX_CNT][MATRIX_SIZE];        // 2d matrice array, float
+uint8_t  Vector_ui8[VECTOR_CNT][VECTOR_SIZE];   // 2d vector array, uint8_t
 
 
 /* Typedef definitions  */
