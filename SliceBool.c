@@ -70,6 +70,7 @@ uint8_t  Vector_ui8[VECTOR_CNT][VECTOR_SIZE];   // 2d vector array, uint8_t
 /* Typedef definitions  */
 
 typedef unsigned char       uint8_t;
+typedef unsigned short      uint16_t;
 
 typedef struct 
 { 
